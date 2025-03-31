@@ -64,22 +64,46 @@ def slack_command():
             "response_type": "ephemeral",
             "text": f"Could not find the FAQ for this channel. If a FAQ configuration file for this channel doesn't exist, please create it by forking the GitHub repo for this app. If it does exist, please contact <@{person20020}>.",
         }
+        return jsonify(response)
+    
+    if not text:
+        response = {
+            "response_type": "ephemeral",
+            "text": f"Please provide a trigger word to search for in the FAQ.",
+        }
+        return jsonify(response)
 
     answer = get_answer(text, faq)
-    question = get_question(text, faq)
 
     if not answer:
         response = {
             "response_type": "ephemeral",
             "text": f"The trigger word you used could not be found in the repository. You can add new responses by making a pull request to the repository, or if this trigger is already there, you can report it to <@{person20020}>.",
         }
+        return jsonify(response)
+    
+    question = get_question(text, faq)
+    
+    if not question:
+        client.chat_postEphemeral(
+            user=user_id,
+            channel=channel_id,
+            text=f"Could not find the question for the trigger word `{text}`. Please make sure it is in the section of the configuration file for this response.",
+        )
+        response = {
+            "response_type": "in_channel",
+            "text": f"`invoked by <@{user_id}>`\n\
+                    {answer}",
+        }
+        return jsonify(response)
     else:
         response = {
             "response_type": "in_channel",
             "text": f"`invoked by <@{user_id}>`\n\
-                 {question}\n\
+                    {question}\n\
                     {answer}",
         }
+        return jsonify(response)
 
 
 
