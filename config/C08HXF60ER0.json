@@ -7,8 +7,7 @@
     "questions": [
         {
             "trigger": "test",
-            "question": "question",
-            "answer": "answer"
+            "question": "question"
         },
         {
             "trigger": "test2",
