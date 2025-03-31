@@ -1,0 +1,24 @@
+{
+    "questions": [
+        {
+            "trigger": "test",
+            "question": "question",
+            "answer": "answer"
+        },
+        {
+            "trigger": "test2",
+            "question": "question2",
+            "answer": "answer2"
+        },
+        {
+            "trigger": "test3",
+            "question": "question3",
+            "answer": "answer3"
+        },
+        {
+            "trigger": "test4",
+            "question": "question4",
+            "answer": "answer4"
+        }
+    ]
+}

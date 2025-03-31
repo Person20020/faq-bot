@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>FAQ Bot</title>
+        <link rel="icon" href="/static/faq-icon-squircle.png" type="image/png">
+        <style>
+            * {
+                background-color: black;
+                color: white;
+                font-family: Roboto Mono, monospace;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>FAQ Bot</h1>
+
+        <p>
+            This is the site for the FAQ Bot.
+        </p>
+
+        <h2>Commands</h2>
+        <h3>/faq</h3>
+        <p>
+            <strong>Usage:</strong> <code>/faq [trigger]</code>
+        </p>
+        
+        <h2>Configuration</h2>
+        <p>
+            The responses for the bot are configured in a JSON file. Each channel that uses the bot will have its own configuration file in the config directory of <a href="https://github.com/Person20020/faq-bot">this GitHub repository</a> that has the channel ID of the channel as the filename.
+            <br>
+            <br>
+            Each question should have a trigger (the word that will be used in the command to get that answer), a question, and an answer.
+        </p>
+    </body>
+</html>
