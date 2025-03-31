@@ -18,8 +18,8 @@ person20020 = os.environ['PERSON20020']
 
 
 def get_faqs(channel_id):
+    url = f"{config_url}{channel_id}.json"
     try:
-        url = f"{config_url}{channel_id}.json"
         request = requests.get(url)
         if request.status_code != 200:
             print(f"Error fetching FAQs: {request.status_code}")
@@ -28,6 +28,7 @@ def get_faqs(channel_id):
         return faq
     except Exception as e:
         print(f"Error fetching FAQs: {e}")
+        print(f"URL: {url}")
         return False
 
 def get_answer(text, faq):
@@ -99,9 +100,7 @@ def slack_command():
     else:
         response = {
             "response_type": "in_channel",
-            "text": f"`invoked by <@{user_id}>`\n\
-                    {question}\n\
-                    {answer}",
+            "text": f"`invoked by <@{user_id}>`\nQuestion: \n{question}\nAnswer: \n{answer}",
         }
         return jsonify(response)
 
