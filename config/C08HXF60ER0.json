@@ -1,4 +1,9 @@
 {
+    "comments":[
+        {
+            "channel": "#person20020-testing"
+        }
+    ],
     "questions": [
         {
             "trigger": "test",
