@@ -32,17 +32,30 @@ def get_faqs(channel_id):
         return False
 
 def get_answer(text, faq):
-    for item in faq["questions"]:
-        if item["trigger"] == text:
-            answer = item["answer"]
-            return answer
-    return False
+    global trigger_found
+    try:
+        for item in faq["questions"]:
+            if item["trigger"] == text:
+                trigger_found = True
+                answer = item["answer"]
+                return answer
+        trigger_found = False
+        print(f"Trigger word not found: {text}")
+        return False
+    except Exception as e:
+        print(f"Error getting answer: {e}")
+        return False
+    
 def get_question(text, faq):
-    for item in faq["questions"]:
-        if item["trigger"] == text:
-            question = item["question"]
-            return question
-    return False
+    try:
+        for item in faq["questions"]:
+            if item["trigger"] == text:
+                question = item["question"]
+                return question
+        return False
+    except Exception as e:
+        print(f"Error getting question: {e}")
+        return False
 
 @app.route('/')
 def index():
@@ -76,10 +89,17 @@ def slack_command():
 
     answer = get_answer(text, faq)
 
+    if not trigger_found:
+        response = {
+            "response_type": "ephemeral",
+            "text": f"The trigger word you used could not be found in the repository. You can add new responses by making a pull request to the repository, or if this trigger is already there, you can report this error to <@{person20020}>.",
+        }
+        return jsonify(response)
+    
     if not answer:
         response = {
             "response_type": "ephemeral",
-            "text": f"The trigger word you used could not be found in the repository. You can add new responses by making a pull request to the repository, or if this trigger is already there, you can report it to <@{person20020}>.",
+            "text": f"The answer for the trigger word you used could not be found in the repository. You can add new responses by making a pull request to the repository, or if this answer is already there, you can report this error to <@{person20020}>.",
         }
         return jsonify(response)
     
@@ -93,14 +113,13 @@ def slack_command():
         )
         response = {
             "response_type": "in_channel",
-            "text": f"`invoked by <@{user_id}>`\n\
-                    {answer}",
+            "text": f"`invoked by <@{user_id}>`\n*Answer:* \n{answer}",
         }
         return jsonify(response)
     else:
         response = {
             "response_type": "in_channel",
-            "text": f"`invoked by <@{user_id}>`\nQuestion: \n{question}\nAnswer: \n{answer}",
+            "text": f"`invoked by <@{user_id}>`\n*Question:* \n{question}\n*Answer:* \n{answer}",
         }
         return jsonify(response)
 
