@@ -19,7 +19,7 @@ person20020 = os.environ['PERSON20020']
 
 def get_faqs(channel_id):
     try:
-        url = f"{config_url}{channel_id}"
+        url = f"{config_url}{channel_id}.json"
         request = requests.get(url)
         if request.status_code != 200:
             print(f"Error fetching FAQs: {request.status_code}")
