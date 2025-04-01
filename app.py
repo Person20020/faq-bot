@@ -15,6 +15,7 @@ slack_events_adapter = SlackEventAdapter(os.environ['SLACK_SIGNING_SECRET'], '/s
 client = WebClient(token=os.environ['SLACK_BOT_TOKEN'])
 config_url = os.environ['CONFIG_URL']
 person20020 = os.environ['PERSON20020']
+run_config = os.environ['RUN_CONFIG']
 
 
 def get_faqs(channel_id):
@@ -126,4 +127,4 @@ def slack_command():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(run_config)
