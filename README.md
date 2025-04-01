@@ -23,10 +23,10 @@ The file for the channel is named with the channel ID. For easy reading, they sh
   "questions": [
     {
       "trigger": "Trigger",
-      "question: "Question",
+      "question": "Question",
       "answer": "Answer"
     },
-    ... more questions
+    "... more questions"
   ]
 }
 ```
