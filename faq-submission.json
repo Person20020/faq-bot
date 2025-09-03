@@ -1,0 +1,133 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "FAQ Submission",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Submit suggestions for FAQs that can be triggered with the 'Trigger FAQ' shortcut.",
+				"emoji": true
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"block_id": "global_block",
+			"label": {
+				"type": "plain_text",
+				"text": "Should this FAQ be available in all channels?",
+				"emoji": true
+			},
+			"element": {
+				"type": "radio_buttons",
+				"action_id": "global",
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Yes — make it global",
+							"emoji": true
+						},
+						"value": "1"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "No — make it channel-specific",
+							"emoji": true
+						},
+						"value": "0"
+					}
+				]
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "name_block",
+			"label": {
+				"type": "plain_text",
+				"text": "FAQ Name",
+				"emoji": true
+			},
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "name",
+				"multiline": false
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "channel_block",
+			"label": {
+				"type": "plain_text",
+				"text": "Which channel should this FAQ be available in? (Leave blank if global)",
+				"emoji": true
+			},
+			"element": {
+				"type": "multi_channels_select",
+				"action_id": "channels",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select channels"
+				}
+			},
+			"optional": true
+		},
+		{
+			"type": "input",
+			"block_id": "question_block",
+			"label": {
+				"type": "plain_text",
+				"text": "Question",
+				"emoji": true
+			},
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "question",
+				"multiline": true
+			}
+		},
+		{
+			"type": "input",
+			"block_id": "answer_block",
+			"label": {
+				"type": "plain_text",
+				"text": "Answer",
+				"emoji": true
+			},
+			"element": {
+				"type": "plain_text_input",
+				"action_id": "answer",
+				"multiline": true
+			}
+		},
+		{
+			"type":"divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Thanks! Your submission will be reviewed. You'll get a message once it's approved or rejected.",
+				"emoji": true
+			}
+		}
+	]
+}
