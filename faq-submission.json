@@ -10,6 +10,7 @@
 		"emoji": true
 	},
 	"type": "modal",
+	"callback_id": "faq_submission",
 	"close": {
 		"type": "plain_text",
 		"text": "Cancel",
@@ -60,20 +61,6 @@
 		},
 		{
 			"type": "input",
-			"block_id": "name_block",
-			"label": {
-				"type": "plain_text",
-				"text": "FAQ Name",
-				"emoji": true
-			},
-			"element": {
-				"type": "plain_text_input",
-				"action_id": "name",
-				"multiline": false
-			}
-		},
-		{
-			"type": "input",
 			"block_id": "channel_block",
 			"label": {
 				"type": "plain_text",
@@ -95,7 +82,7 @@
 			"block_id": "question_block",
 			"label": {
 				"type": "plain_text",
-				"text": "Question",
+				"text": "Question (Try to keep this short. When choosing a response the dropdown is limited to 75 characters and any longer will be truncated to fit.)",
 				"emoji": true
 			},
 			"element": {

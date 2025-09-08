@@ -33,11 +33,6 @@ CREATE TABLE IF NOT EXISTS faqs (
     created_by TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS channels (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE
-);
-
 CREATE TABLE IF NOT EXISTS faq_channels (
     faq_id INTEGER NOT NULL,
     channel_id INTEGER NOT NULL,
@@ -61,6 +56,31 @@ CREATE TABLE IF NOT EXISTS faq_pending_channels (
     FOREIGN KEY (faq_id) REFERENCES faq_pending (id) ON DELETE CASCADE,
     FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS faq_rejected (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    global BOOLEAN NOT NULL,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL,
+    created_by TEXT NOT NULL,
+    rejected_by TEXT NOT NULL,
+    reason TEXT
+);
+
+CREATE TABLE IF NOT EXISTS faq_rejected_channels (
+    faq_id INTEGER NOT NULL,
+    channel_id INTEGER NOT NULL,
+    PRIMARY KEY (faq_id, channel_id),
+    FOREIGN KEY (faq_id) REFERENCES faq_rejected (id) ON DELETE CASCADE,
+    FOREIGN KEY (channel_id) REFERENCES channels (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS reviewers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL,
+    admin BOOL NOT NULL
+);
 EOF
 
 if [ ! -f .env ]; then
@@ -68,6 +88,9 @@ if [ ! -f .env ]; then
 SLACK_BOT_TOKEN=
 SLACK_SIGNING_SECRET=
 PORT=
+DATABASE_PATH=$(realpath database.db)
+ADMIN_ID=
+FAQ_SUBMISSION_REVIEW_CHANNEL=
 EOF
     echo -e "${GREEN}Created .env file.${NC}"
     echo -e "${YELLOW}Add your credentials/secrets into the .env file.${NC}"

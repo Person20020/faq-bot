@@ -1,0 +1,74 @@
+{
+	"title": {
+		"type": "plain_text",
+		"text": "Trigger FAQ",
+		"emoji": true
+	},
+	"submit": {
+		"type": "plain_text",
+		"text": "Submit",
+		"emoji": true
+	},
+	"type": "modal",
+	"callback_id": "faq_trigger_form_submitted",
+	"close": {
+		"type": "plain_text",
+		"text": "Cancel",
+		"emoji": true
+	},
+	"blocks": [
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "Trigger a FAQ response.",
+				"emoji": true
+			}
+		},
+		{
+			"type": "divider"
+		},
+		{
+			"type": "input",
+			"block_id": "faq_selection_block",
+			"label": {
+				"type": "plain_text",
+				"text": "Select a response.",
+				"emoji": true
+			},
+            "element": {
+                "type": "external_select",
+                "action_id": "faq_selection",
+                "min_query_length": 0,
+                "placeholder": {
+                    "type": "plain_text",
+                    "text": "Select an item",
+                    "emoji": true
+                }
+            },
+			"optional": false
+		},
+		{
+			"type":"divider"
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "plain_text",
+				"text": "The response will be sent in the thread responding to the message you used the shortcut on.\nPlease make sure you are responding with relevant information.",
+				"emoji": true
+			}
+		},
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "plain_text",
+                "text": "If you do not find a relevant response, you can add a new one using '/add-faq'.",
+                "emoji": true
+            }
+        }
+	]
+}
