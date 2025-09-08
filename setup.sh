@@ -83,6 +83,13 @@ CREATE TABLE IF NOT EXISTS reviewers (
 );
 EOF
 
+if [ ! -d logs ]; then
+    echo -e "${GREEN}Creating logs directory...${NC}"
+    mkdir logs
+else
+    echo -e "${YELLOW}Logs directory already exists.${NC}"
+fi
+
 if [ ! -f .env ]; then
     cat << EOF > .env
 SLACK_BOT_TOKEN=

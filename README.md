@@ -14,7 +14,7 @@ A simple FAQ bot that allows people to submit new questions/answers and allows r
 
 `faq_bot_test` Make the bot wave. (Just a test to make sure it is running.) The bot should also react with a wave when pinged.
 
-## Getting Started
+## Running Bot
 
 1. Clone the repository:
     ```bash
@@ -28,6 +28,5 @@ A simple FAQ bot that allows people to submit new questions/answers and allows r
 3. Fill in .env
 4. Run the bot:
     ```bash
-    . ./venv/bin/activate
-    python app.py
+    ./run.sh
     ```
