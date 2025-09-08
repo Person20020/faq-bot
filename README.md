@@ -11,6 +11,7 @@ A simple FAQ bot that allows people to submit new questions/answers and allows r
 ### Message Shortcuts
 
 `Trigger FAQ` Open a modal window where you can select the response to the message you ran the shortcut on.
+
 `faq_bot_test` Make the bot wave. (Just a test to make sure it is running.)
 
 ## Getting Started
