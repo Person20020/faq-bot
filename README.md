@@ -30,3 +30,9 @@ A simple FAQ bot that allows people to submit new questions/answers and allows r
     ```bash
     ./run.sh
     ```
+
+## Video
+
+This is a video of how the bot works:
+
+https://github.com/user-attachments/assets/ce3fc5f1-ad50-4b8b-8030-b449929a8ce1
