@@ -3,3 +3,4 @@ venv/
 database.db
 __pycache__/
 logs/
+node_modules/

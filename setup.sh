@@ -19,9 +19,11 @@ fi
 
 source venv/bin/activate
 
-echo -e "${GREEN}Installing dependencies...${NC}"
+echo -e "${GREEN}Installing python packages...${NC}"
 pip install -r requirements.txt
 
+echo -e "${GREEN}Installing npm packages...${NC}"
+npm install
 
 echo -e "${GREEN}Setting up database...${NC}"
 sqlite3 database.db <<EOF

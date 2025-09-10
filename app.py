@@ -1,6 +1,6 @@
 import copy
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import json
 import os
 import slackeventsapi
@@ -11,7 +11,7 @@ import warnings
 
 load_dotenv()
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="website/templates", static_folder="website/static")
 
 slack_bot_token = os.getenv("SLACK_BOT_TOKEN")
 if not slack_bot_token:
@@ -85,11 +85,20 @@ with open("faq-submission.json", "r") as f:
 with open("faq-trigger-form.json", "r") as f:
     faq_trigger_form = json.load(f)
 
+
+
+
+# Website
 @app.route("/")
 def index():
-    return "Hello, this is the FAQ Bot! Check it out in Slack."
+    return render_template("index.html")
+
+@app.route("/faqs")
+def faqs():
+    return render_template("faqs.html")
 
 
+# Slack Bot
 @app.route("/slack/command", methods=["POST"])
 def slack_command():
     data = request.form
@@ -124,6 +133,8 @@ def slack_command():
             conn.close()
 
     return "", 200
+
+
 
 @app.route("/slack/interactions", methods=["POST"])
 def slack_interactions():
@@ -350,11 +361,36 @@ def slack_interactions():
                 ]
             )
 
+            # Notify the user
+            slack_client.chat_postMessage(
+                channel=user_id,
+                text="Your FAQ submission has been approved!",
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": (
+                                f"Your FAQ submission has been approved!\n"
+                                f"Global: `{is_global}`"
+                                + (
+                                    f"\nFor the following channels:\n{', '.join(f'<#{channel_id}>' for channel_id in channels)}."
+                                    if not is_global else ""
+                                )
+                                + f"\n*Question:*\n```{question}```\n*Answer:*\n```{answer}```"
+                            )
+                        }
+                    }
+                ]
+            )
+
             return "", 200
 
 
         elif actions and actions[0]["action_id"] == "reject_faq":
             # Move to rejected table
+            rejection_reason = "PLACEHOLDER REASON CHANGE THIS LATER WHEN ADDING REASON POPUP" # Change this later when adding reason popup
+
             pending_faq_id = payload["actions"][0]["value"]
             conn = sqlite3.connect(db_path)
             cursor = conn.cursor()
@@ -366,7 +402,7 @@ def slack_interactions():
                 channel_ids = cursor.fetchall()
                 
                 # Add the faq into the rejected table
-                cursor.execute("INSERT INTO faq_rejected (global, question, answer, created_by, rejected_by, reason) VALUES (?, ?, ?, ?, ?, ?)", (faq[0], faq[1], faq[2], faq[3], payload["user"]["id"], "PLACEHOLDER REASON CHANGE THIS LATER"))# PLACEHOLDER REASON CHANGE THIS LATER WHEN ADDING REASON POPUP
+                cursor.execute("INSERT INTO faq_rejected (global, question, answer, created_by, rejected_by, reason) VALUES (?, ?, ?, ?, ?, ?)", (faq[0], faq[1], faq[2], faq[3], payload["user"]["id"], rejection_reason))
                 rejected_faq_id = cursor.lastrowid
 
                 # Map channels to the new FAQ
@@ -383,6 +419,7 @@ def slack_interactions():
             answer = faq[2]
             user_id = faq[3]
             channels = [channel_id for (channel_id,) in channel_ids]
+
 
             slack_client.chat_update(
                 channel=review_channel_id,
@@ -416,10 +453,34 @@ def slack_interactions():
                 ]
             )
 
+            # Notify the user
+            slack_client.chat_postMessage(
+                channel=user_id,
+                text="Your FAQ submission has been rejected.",
+                blocks=[
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": (
+                                f"Your FAQ submission has been rejected.\n"
+                                f"Global: `{is_global}`"
+                                + (
+                                    f"\nFor the following channels:\n{', '.join(f'<#{channel_id}>' for channel_id in channels)}."
+                                    if not is_global else ""
+                                )
+                                + f"\n*Question:*\n```{question}```\n*Answer:*\n```{answer}```\n*Reason:*\n```{rejection_reason}```"
+                            )
+                        }
+                    }
+                ]
+            )
+
             return "", 200
 
         
     return "", 200
+
 
 
 @app.route("/slack/external_options_load", methods=["POST"])
@@ -448,7 +509,6 @@ def handle_app_mention(event_data):
 
 
 
-
 def generate_faq_form(channel_id, message_ts):
     form = copy.deepcopy(faq_trigger_form)
     form["private_metadata"] = json.dumps({
@@ -456,6 +516,7 @@ def generate_faq_form(channel_id, message_ts):
         "message_ts": message_ts
     })
     return form
+
 
 
 def get_faq_options(channel_id):
