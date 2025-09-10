@@ -1,2 +1,61 @@
 @import "tailwindcss";
 
+
+
+h1 {
+    @apply text-5xl font-bold;
+}
+h2 {
+    @apply text-4xl font-bold;
+}
+h3 {
+    @apply text-3xl font-bold;
+}
+h4 {
+    @apply text-2xl font-bold;
+}
+h5 {
+    @apply text-xl font-bold;
+}
+p {
+    @apply text-lg;
+}
+
+
+
+.h1-default {
+    @apply text-5xl font-bold text-slate-200 mx-auto;
+}
+.h2-default {
+    @apply text-4xl font-bold text-slate-200;
+}
+.h3-default {
+    @apply text-3xl font-bold text-slate-200;
+}
+.h4-default {
+    @apply text-2xl font-bold text-slate-200;
+}
+.h5-default {
+    @apply text-xl font-bold text-slate-200;
+}
+
+.p-default {
+    @apply text-lg text-slate-200;
+}
+
+
+.a-default {
+    @apply text-slate-400 underline underline-offset-2 decoration-solid hover:decoration-wavy hover:decoration-2;
+}
+
+.nav-link {
+    @apply text-slate-300 no-underline;
+}
+
+.nav-button {
+    @apply bg-slate-700 p-2 py-1 border border-slate-600 rounded-lg;
+}
+
+.main-container {
+    @apply flex flex-col space-y-3 bg-slate-800 p-3 rounded-2xl border border-slate-600;
+}

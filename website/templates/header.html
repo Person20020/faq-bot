@@ -1,10 +1,28 @@
 <header>
-    <nav class="flex flex-row space-x-3 p-3 bg-slate-200">
-        <div class="bg-gray-300 p-2 rounded-lg">
-            <a class="nav-link" href="/">Home</a>
+    <nav class="flex flex-row items-center space-x-3 bg-slate-800 border-b-2 border-slate-600">
+        <div class="flex flex-grow flex-row items-center space-x-3 p-3">
+            <div>
+                <h1 class="flex items-center text-center"></h1>
+                    <a href="/" class="text-slate-300 font-bold text-3xl p-2">FAQ Bot</a>
+                </h1>
+            </div>
+            <div class="nav-button">
+                <h4>
+                    <a class="nav-link" href="/">Home</a>
+                </h4>
+            </div>
+            <div class="nav-button">
+                <h4>
+                    <a class="nav-link" href="/faqs">FAQs</a>
+                </h4>
+            </div>
         </div>
-        <div class="bg-gray-300 p-2 rounded-lg">
-            <a class="nav-link" href="/faqs">FAQs</a>
+        <div class="flex items-center justify-center p-3">
+            <div class="nav-button">
+                <h5>
+                    <a class="nav-link" href="/login">Sign in with Slack</a>
+                </h5>
+            </div>
         </div>
     </nav>
 </header>
