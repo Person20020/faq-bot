@@ -83,6 +83,13 @@ CREATE TABLE IF NOT EXISTS reviewers (
     user_id TEXT NOT NULL,
     admin BOOL NOT NULL
 );
+
+
+CREATE TABLE IF NOT EXISTS site_users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    slack_user_id TEXT NOT NULL,
+    user_access_token TEXT NOT NULL
+);
 EOF
 
 if [ ! -d logs ]; then
@@ -100,6 +107,10 @@ PORT=
 DATABASE_PATH=$(realpath database.db)
 ADMIN_ID=
 FAQ_SUBMISSION_REVIEW_CHANNEL=
+SLACK_API_APP_ID=
+SLACK_CLIENT_ID=
+SLACK_OAUTH_REDIRECT_URL=
+SLACK_CLIENT_SECRET=
 EOF
     echo -e "${GREEN}Created .env file.${NC}"
     echo -e "${YELLOW}Add your credentials/secrets into the .env file.${NC}"

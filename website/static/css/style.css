@@ -53,9 +53,13 @@ p {
 }
 
 .nav-button {
-    @apply bg-slate-700 p-2 py-1 border border-slate-600 rounded-lg;
+    @apply bg-slate-700 p-2 py-1 border border-slate-600 rounded-lg w-fit;
 }
 
 .main-container {
-    @apply flex flex-col space-y-3 bg-slate-800 p-3 rounded-2xl border border-slate-600;
+    @apply flex flex-col space-y-3 bg-slate-800 p-6 rounded-2xl border border-slate-600;
+}
+
+.top-container {
+    @apply bg-slate-800 p-3 rounded-2xl border border-slate-600 mx-auto w-fit;
 }

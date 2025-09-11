@@ -1,18 +1,31 @@
 import copy
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session
+from functools import wraps
 import json
 import os
 import slackeventsapi
 from slack_sdk import WebClient
 import sqlite3
+from urllib.parse import urlencode
+import urllib.parse
 import warnings
 
 
 load_dotenv()
 
+# Flask
 app = Flask(__name__, template_folder="website/templates", static_folder="website/static")
 
+flask_secret_key = os.getenv("FLASK_SECRET_KEY")
+if not flask_secret_key:
+    warnings.warn("FLASK_SECRET_KEY environment variable is not set. A random key will be used, which will invalidate sessions on server restart.")
+    flask_secret_key = os.urandom(24)
+
+app.secret_key = flask_secret_key
+
+
+# Slack credentials/config
 slack_bot_token = os.getenv("SLACK_BOT_TOKEN")
 if not slack_bot_token:
     raise ValueError("SLACK_BOT_TOKEN environment variable is not set.")
@@ -27,6 +40,23 @@ slack_events_adapter = slackeventsapi.SlackEventAdapter(slack_signing_secret, "/
 slack_api_app_id = os.getenv("SLACK_API_APP_ID")
 if not slack_api_app_id:
     warnings.warn("SLACK_API_APP_ID environment variable is not set.")
+
+slack_client_id = os.getenv("SLACK_CLIENT_ID")
+if not slack_client_id:
+    raise ValueError("SLACK_CLIENT_ID environment variable is not set.")
+
+slack_oauth_redirect_url = os.getenv("SLACK_OAUTH_REDIRECT_URL")
+if not slack_oauth_redirect_url:
+    raise ValueError("SLACK_OAUTH_REDIRECT_URL environment variable is not set.")
+
+slack_client_secret = os.getenv("SLACK_CLIENT_SECRET")
+if not slack_client_secret:
+    raise ValueError("SLACK_CLIENT_SECRET environment variable is not set.")
+
+# Slack Scopes
+bot_scopes = "app_mentions:read,chat:write,chat:write.public,commands,im:write,reactions:write"
+user_scopes = "channels:read,groups:read"
+
 
 
 # Database
@@ -88,14 +118,101 @@ with open("faq-trigger-form.json", "r") as f:
 
 
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not session.get("authenticated"):
+            return render_template("not_logged_in.html", path=request.path), 401
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 # Website
 @app.route("/")
 def index():
     return render_template("index.html")
 
+@app.route("/about")
+def commands():
+    return render_template("about.html")
+
 @app.route("/faqs")
+@login_required
 def faqs():
     return render_template("faqs.html")
+
+
+
+# Login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    next_url = request.args.get("next") or request.headers.get("Referer", "/")
+    query = {
+        "client_id": slack_client_id,
+        "scope": bot_scopes,
+        "user_scope": user_scopes,
+        "redirect_uri": slack_oauth_redirect_url,
+        "state": next_url
+    }
+    print(query)
+    return redirect(f"https://slack.com/oauth/v2/authorize?{urllib.parse.urlencode(query)}")
+
+# OAuth Redirect
+@app.route("/slack/oauth_redirect")
+def oauth_redirect():
+    code = request.args.get("code")
+    if not code:
+        return render_template("error.html", error="No code provided.", description="No code parameter was provided with the request. You can try again or report the issue."), 400
+
+    state = request.args.get("state", "/")
+    print(f"State: {state}")
+
+    response = slack_client.oauth_v2_access(
+        client_id=slack_client_id,
+        client_secret=slack_client_secret,
+        code=code,
+        redirect_uri=slack_oauth_redirect_url
+    )
+
+    if not response["ok"]:
+        return render_template("error.html", error="OAuth failed.", description=f"OAuth failed with error: {response['error']}. You can try again or report the issue."), 400
+
+    bot_access_token = response["access_token"]
+    user_id = response["authed_user"]["id"]
+    user_access_token = response["authed_user"]["access_token"]
+
+    session["authenticated"] = True
+    session["user_id"] = user_id
+    
+    try:
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT slack_user_id FROM site_users WHERE slack_user_id = ?", (user_id,))
+        if cursor.fetchone() is None:
+            cursor.execute("INSERT INTO site_users (slack_user_id, user_access_token) VALUES (?, ?)", (user_id, user_access_token))
+        else:
+            cursor.execute("UPDATE site_users SET user_access_token = ? WHERE slack_user_id = ?", (user_access_token, user_id))
+        conn.commit()
+    except sqlite3.Error as e:
+        return render_template("error.html", error="Database error.", description=f"Failed to connect to database: '{e}'. You can try again or report the issue."), 500
+    conn.close()
+
+    return redirect(state)
+
+# Logout
+@app.route("/logout")
+def logout():
+    state = request.args.get("next") or request.headers.get("Referer", "/")
+    session.clear()
+    return redirect(state)
+
+
+# 404 Page
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html", path=request.path), 404
+
+
 
 
 # Slack Bot

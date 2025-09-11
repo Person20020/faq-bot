@@ -1,15 +1,17 @@
 {% extends "base.html" %}
-{% block title %}FAQs{% endblock %}
+{% block title %}Error{% endblock %}
 {% block content %}
 
 
 <div class="top-container">
     <h1 class="h1-default">
-        FAQs
+        Error
     </h1>
 </div>
 <div class="main-container">
-    <h2 class="h2-default">Hello</h2>
+    <h2 class="h2-default mx-auto">{{error}}</h2>
+
+    <p class="p-default mx-auto">{{description}}</p>
 </div>
 
 
